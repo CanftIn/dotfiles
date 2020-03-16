@@ -1,0 +1,51 @@
+#!/bin/sh
+
+set -e
+set -o pipefail
+
+reveal=0
+case "$1" in
+  -R|-r)
+    reveal=1
+    shift
+    ;;
+esac
+
+search_dir="$HOME/Dropbox/gifs"
+query="$1"
+image=$(find "$search_dir" -type f -exec basename {} \; | fzy --query="$query")
+
+if [ -z "$image" ]; then
+  exit 1
+fi
+
+image="$search_dir/$image"
+
+if [ $reveal -eq 1 ]; then
+  open -R "$image"
+  exit $?
+fi
+
+swift - "$image" <<EOF
+import AppKit
+import Foundation
+
+guard CommandLine.arguments.count > 1, let path = CommandLine.arguments.last else {
+    fputs("Must pass file path\n", stderr)
+    exit(1)
+}
+
+let URL = NSURL(fileURLWithPath: path)
+guard URL.checkResourceIsReachableAndReturnError(nil) else {
+    fputs("Invalid file path\n", stderr)
+    exit(1)
+}
+
+let pb = NSPasteboard.general()
+pb.clearContents()
+let result = pb.writeObjects([URL])
+if !result {
+    fputs("Failed to copy image\n", stderr)
+    exit(1)
+}
+EOF

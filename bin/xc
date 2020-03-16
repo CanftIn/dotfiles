@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# This is only complicated because of http://www.openradar.me/35308287
+# Otherwise we could just call `open -a Xcode .`
+
+# Can't use pgrep here since Xcode is the parent of tons of processes
+xcodes=($(ps -axo comm= | grep "Xcode$" | sed "s=/Contents/MacOS/Xcode==" || true))
+
+open_project() {
+  PATH=/usr/bin:/bin open -a "$1" .
+}
+
+case "${#xcodes[@]}" in
+  0)
+    xcode="$(xcode-select -p | sed "s=/Contents/Developer==")"
+    open_project "$xcode"
+    ;;
+  1)
+    open_project "${xcodes[0]}"
+    ;;
+  *)
+    xcode=$(printf '%s\n' "${xcodes[@]}" | fzy)
+    open_project "$xcode"
+    ;;
+esac

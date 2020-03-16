@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -euo pipefail
+
+index=$(tmux display -p "TMUXPWD_#D" | tr -d "%")
+new_pwd=$(tmux show-environment | grep "$index=" | sed 's/^.*=//')
+if [[ -z "$new_pwd" || ! -d "$new_pwd" ]];then
+  if [[ -f "$CURRENT_PROJECT_PATH" ]]; then
+    new_pwd="$(cat "$CURRENT_PROJECT_PATH")"
+  else
+    new_pwd="$HOME"
+  fi
+fi
+
+# TODO the $2 isn't set for new-window because it's used for -h/-v
+tmux "$1" ${2:-} -c "$new_pwd"

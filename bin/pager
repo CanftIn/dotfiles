@@ -1,0 +1,6 @@
+#!/bin/sh
+
+content=$(cat)
+if [ -n "$content" ]; then
+  echo "$content" | diff-highlight | less
+fi

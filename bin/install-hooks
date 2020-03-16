@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+hooks=(~/.git_template/hooks/*)
+
+if [[ ! -d .git ]]; then
+  echo "No .git directory"
+  exit 1
+fi
+
+mkdir -p ./.git/hooks
+for hook in "${hooks[@]}"
+do
+  cp "$hook" ./.git/hooks
+done
+
+echo "Done"

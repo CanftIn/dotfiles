@@ -15,6 +15,8 @@ My ArchLinux setting resouce files, the `private` fold is about my private confi
 
 `arch` => ArchLinux environment configuations,
 
+`manager.sh` => https://github.com/keith/dotfiles
+
 and so on.
 
 From 2020 ==> this repo is not only aiming at ArchLinux, but also working well on Windows such as `spacemacs` and `vimrc` dotfiles. 
