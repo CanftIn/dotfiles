@@ -5,6 +5,7 @@
 
 My Emacs, vim, zsh, tmux, i3, urxvt, alacritty, ArchLinux, WSL, Windows dotfiles.
 
+**Lightly version** of https://github.com/CanftIn/MyRC
 
 My ArchLinux setting resouce files, the `private` fold is about my private configuations for platfroms like: 
 
@@ -17,8 +18,6 @@ My ArchLinux setting resouce files, the `private` fold is about my private confi
 and so on.
 
 From 2020 ==> this repo is not only aiming at ArchLinux, but also working well on Windows such as `spacemacs` and `vimrc` dotfiles. 
-
-![screenshot](https://github.com/CanftIn/MyRC/tree/master/screenshots/screenshot.png)
 
 `spacemacs` private configuations include `font ligature` `org mode` `language format` `prettify eshell` `prettify code` `yasnippets` `CanftIn-theming` customizations and so on.
 
