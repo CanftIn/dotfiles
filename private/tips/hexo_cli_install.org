@@ -1,0 +1,7 @@
+* 关于sudo npm 时的EACCES permissions error 问题
+** 不要在npm之前加上sudo
+mkdir ~/.npm-global
+npm config set prefix '~/.npm-global'
+export PATH=~/.npm-global/bin:$PATH
+source ~/.profile
+npm install -g hexo-cli

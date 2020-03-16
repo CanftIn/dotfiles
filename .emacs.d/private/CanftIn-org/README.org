@@ -1,0 +1,29 @@
+#+TITLE: CanftIn-org layer
+
+# The maximum height of the logo should be 200 pixels.
+[[img/CanftIn-org.png]]
+
+# TOC links should be GitHub style anchors.
+* Table of Contents                                        :TOC_4_gh:noexport:
+- [[#description][Description]]
+  - [[#参考链接][参考链接：]]
+- [[#install][Install]]
+- [[#key-bindings][Key bindings]]
+
+* Description
+** 参考链接：
+[[https://github.com/lujun9972/.spacemacs.d/tree/master/layers/my-GTD]]
+[[https://github.com/zilongshanren/spacemacs-private/blob/develop/layers/zilongshanren-org]]
+
+
+* Install
+To use this configuration layer, add it to your =~/.spacemacs=. You will need to
+add =CanftIn-org= to the existing =dotspacemacs-configuration-layers= list in this
+file.
+
+* Key bindings
+
+| Key Binding | Description    |
+|-------------+----------------|
+| ~SPC x x x~ | Does thing01   |
+

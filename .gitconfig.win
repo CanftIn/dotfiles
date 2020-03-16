@@ -1,0 +1,14 @@
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+[user]
+	name = CanftIn
+	email = wwc7033@gmail.com
+[winUpdater]
+	recentlySeenVersion = 2.21.0.windows.1
+[http]
+	proxy = http://127.0.0.1:1099
+[https]
+	proxy = https://127.0.0.1:1099

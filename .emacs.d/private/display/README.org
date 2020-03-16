@@ -1,0 +1,29 @@
+#+TITLE: Display Layer
+
+* Description
+
+~config.el~ hosts my many theming updates, atm to ~zenburn~ and ~solarized-light~.
+
+~packages.el~ configures my ~pretty~ packages and other display-related pkgs.
+
+See the project root README for short descriptions of each pretty package and
+associated blog posts.
+
+* Screenshots
+** Pretty-code
+
+[[file:./imgs/pretty-code.png]]
+
+** Pretty-eshell
+
+[[file:./imgs/pretty-eshell.png]]
+
+** Pretty-magit
+
+[[file:./imgs/pretty-magit.png]]
+
+** Pretty-outlines
+
+| Pretty Outlines                 | Jumping to an outline       |
+|---------------------------------+-----------------------------|
+| [[file:./imgs/pretty-outlines.png]] | [[file:./imgs/outline-ivy.png]] |
