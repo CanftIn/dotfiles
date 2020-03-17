@@ -6,9 +6,6 @@
   "Layer configuration:
 This function should only modify configuration layer settings."
   (setq-default
-   ;; Base distribution to use. This is a layer contained in the directory
-   ;; `+distribution'. For now available distributions are `spacemacs-base'
-   ;; or `spacemacs'. (default 'spacemacs)
    dotspacemacs-distribution 'spacemacs
 
    dotspacemacs-enable-lazy-installation 'unused
@@ -30,7 +27,17 @@ This function should only modify configuration layer settings."
               haskell-completion-backend 'lsp ;;'ghci 'dante
               haskell-enable-hindent t
               haskell-enable-hindent-style "johan-tibell")
-     c-c++
+     (c-c++ :variables
+           =c-c++-backend= 'lsp-clangd
+           c-c++-adopt-subprojects t
+           c-c++-lsp-enable-semantic-highlight 'rainbow
+           c-c++-default-mode-for-headers 'c++-mode
+           c++-enable-organize-includes-on-save t
+           c-c++-enable-clang-format-on-save t
+           c-c++-enable-clang-format-on-save t
+           c-c++-enable-google-style t
+           c-c++-enable-google-newline t
+           )
      java
      python
      scheme
@@ -41,6 +48,7 @@ This function should only modify configuration layer settings."
      emacs-lisp
      ocaml
      sml
+     (reasonml :variables reason-auto-refmt t)
      asm
      (scala :variables scala-backend 'scala-metals)
      (elixir :variables elixir-backend 'alchemist)
@@ -51,6 +59,7 @@ This function should only modify configuration layer settings."
      ;; kotlin
      ;; idris
      ;; elm
+     coq
      (markdown :variables markdown-live-preview-engine 'vmd)
      asciidoc
      graphviz
@@ -68,7 +77,8 @@ This function should only modify configuration layer settings."
          go-backend 'lsp
          go-tab-width 2)
      ;; ----------------   languages   ----------------
-
+     (vue :variables vue-backend 'lsp)
+     (node :variables node-add-modules-path t)
 
      ;; ----------------     tools     ----------------
      helm
@@ -120,6 +130,7 @@ This function should only modify configuration layer settings."
      syntax-checking
      (version-control :variables
                       version-control-diff-tool 'diff-hl
+                      version-control-diff-side 'left
                       version-control-global-margin t)
      ;; ----------------     tools     ----------------
 
@@ -699,6 +710,32 @@ It should only modify the values of Spacemacs settings."
   (add-hook 'haskell-mode-hook
             #'lsp)
   ;; ============ haskell setting ============
+
+  ;; ============ coq setting ============
+  (with-eval-after-load 'company-coq
+    (add-to-list 'company-coq-disabled-features 'prettify-symbols))
+  ;; ============ coq setting ============
+
+  ;; ============ node setting ============
+  (add-to-list 'exec-path "C:/Program Files/nodejs" t)
+  (setq-default
+   ;; js2-mode
+   js2-basic-offset 2
+   ;; web-mode
+   css-indent-offset 2
+   web-mode-markup-indent-offset 2
+   web-mode-css-indent-offset 2
+   web-mode-code-indent-offset 2
+   web-mode-attr-indent-offset 2)
+  (with-eval-after-load 'web-mode
+    (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil)))
+  ;; ============ node setting ============
+
+  ;; ============ fsharo setting ============
+  (setq inferior-fsharp-program "D:/Microsoft Visual Studio/Common7/IDE/CommonExtensions/Microsoft/FSharp/Fsi.exe")
+  ;; ============ fsharo setting ============
 
   ;; ---------------- language settings ----------------
 
