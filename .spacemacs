@@ -171,6 +171,7 @@ This function should only modify configuration layer settings."
      keyfreq
      go-playground
      gotest
+     doom-themes
    )
 
    dotspacemacs-frozen-packages '()
@@ -226,18 +227,73 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-initial-scratch-message nil
 
    dotspacemacs-themes '(
-                         (CanftIn-dracula :location local)
-                         ;;farmhouse-dark
-                         ;;material
-                         ;;material-light
-                         ;; majapahit-dark
-                         ;; majapahit-light
-                         ;; moe-dark
-                         ;; moe-light
-                         ;; solarized-dark
-                         ;; solarized-light
-                         ;;spacemacs-dark
-                         ;;spacemacs-light
+                         ;;(CanftIn-dracula :location local)
+                         doom-dracula
+                         doom-one
+                         doom-one-light
+                         doom-vibrant
+                         doom-acario-dark
+                         doom-acario-light
+                         doom-city-lights
+                         doom-challenger-deep
+                         doom-dark+
+                         doom-ephemeral
+                         doom-fairy-floss
+                         doom-gruvbox
+                         doom-horizon
+                         doom-Iosvkem
+                         doom-laserwave
+                         doom-material
+                         doom-manegarm
+                         doom-molokai
+                         doom-monokai-classic
+                         doom-monokai-pro
+                         doom-moonlight
+                         doom-nord
+                         doom-nord-light
+                         doom-nova
+                         doom-oceanic-next
+                         doom-opera
+                         doom-opera-light
+                         doom-outrun-electric
+                         doom-palenight
+                         doom-peacock
+                         doom-rouge
+                         doom-snazzy
+                         doom-solarized-dark
+                         doom-solarized-light
+                         doom-sourcerer
+                         doom-spacegrey
+                         doom-tomorrow-day
+                         doom-tomorrow-night
+                         doom-wilmersdorf
+                         alect-dark
+                         afternoon
+                         brin
+                         apropospriate-dark
+                         bubbleberry
+                         darktooth
+                         flatland
+                         gotham
+                         gruvbox
+                         inkpot
+                         heroku
+                         light-soap
+                         odersky
+                         zenburn
+                         flatui
+                         alect-light
+                         farmhouse-dark
+                         material
+                         material-light
+                         majapahit-dark
+                         majapahit-light
+                         moe-dark
+                         moe-light
+                         solarized-dark
+                         solarized-light
+                         spacemacs-dark
+                         spacemacs-light
                          )
 
    dotspacemacs-mode-line-theme '(spacemacs
