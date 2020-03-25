@@ -24,7 +24,7 @@ This function should only modify configuration layer settings."
      html
      sql
      (haskell :variables
-              haskell-completion-backend 'lsp ;;'ghci 'dante
+              haskell-completion-backend 'dante ;;'lsp ;;'ghci 'dante
               haskell-enable-hindent t
               haskell-enable-hindent-style "johan-tibell")
      (c-c++ :variables
@@ -38,7 +38,7 @@ This function should only modify configuration layer settings."
            c-c++-enable-google-style t
            c-c++-enable-google-newline t
            )
-     java
+     (java :variables java-backend 'meghanada)
      python
      scheme
      racket
@@ -50,7 +50,14 @@ This function should only modify configuration layer settings."
      sml
      (reasonml :variables reason-auto-refmt t)
      asm
-     (scala :variables scala-backend 'scala-metals)
+     (scala :variables
+            scala-backend 'scala-metals
+            scala-indent:use-javadoc-style t
+            scala-enable-eldoc t
+            scala-auto-insert-asterisk-in-comments t
+            scala-use-unicode-arrows t
+            scala-auto-start-backend t
+            )
      (elixir :variables elixir-backend 'alchemist)
      erlang
      (rust :variables rust-backend 'racer)
@@ -98,7 +105,7 @@ This function should only modify configuration layer settings."
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip nil
                       auto-completion-enable-sort-by-usage t
-                      auto-completion-private-snippets-directory "~/.emacs.d/private/yasnippets"
+                      auto-completion-private-snippets-directory "d:/linux_home/.emacs.d/private/yasnippets"
                       )
      better-defaults
      helpful
@@ -301,9 +308,9 @@ It should only modify the values of Spacemacs settings."
 
    dotspacemacs-undecorated-at-startup nil
 
-   dotspacemacs-active-transparency 90
+   dotspacemacs-active-transparency 80 ;;90
 
-   dotspacemacs-inactive-transparency 90
+   dotspacemacs-inactive-transparency 99 ;; 90
 
    dotspacemacs-show-transient-state-title t
 
@@ -670,7 +677,7 @@ It should only modify the values of Spacemacs settings."
 
   ;; ============ clojure setting ============
   ;; clojure ',-g-g' command for java source code
-  (setq cider-jdk-src-paths '("C:/Program Files/Java/jdk1.8.0_171/src"))
+  ;;(setq cider-jdk-src-paths '("C:/Program Files/Java/jdk1.8.0_171/src"))
   (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hook-clojure-mode)
   ;; ============ clojure setting ============
 
@@ -684,10 +691,14 @@ It should only modify the values of Spacemacs settings."
   ;;(setq scheme-program-name "racket")
   ;;(setq geiser-chez-binary "racket")
   ;;(setq geiser-active-implementations '(racket))
-  (setq scheme-program-name "chicken-csi")
-  (setq geiser-chez-binary "chicken-csi")
-  (setq geiser-active-implementations '(chicken-csi))
-  ;; ============ scheme setting ============
+  ;;(setq scheme-program-name "chicken-csi")
+  ;;(setq geiser-chez-binary "chicken-csi")
+  ;;(setq geiser-active-implementations '(chicken-csi))
+  (setq scheme-program-name "chicken")
+  (setq geiser-chez-binary "chicken")
+  (setq geiser-active-implementations '(chicken))
+  (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hook-scheme-mode)
+;; ============ scheme setting ============
 
   ;; ============ haskell setting ============
   ;; Indentation doesn't reset when pressing return after an empty line
@@ -712,8 +723,8 @@ It should only modify the values of Spacemacs settings."
   ;; ============ haskell setting ============
 
   ;; ============ coq setting ============
-  (with-eval-after-load 'company-coq
-    (add-to-list 'company-coq-disabled-features 'prettify-symbols))
+  ;;(with-eval-after-load 'company-coq
+  ;;  (add-to-list 'company-coq-disabled-features 'prettify-symbols))
   ;; ============ coq setting ============
 
   ;; ============ node setting ============
