@@ -856,6 +856,20 @@ It should only modify the values of Spacemacs settings."
 
   (spacemacs/set-leader-keys-for-major-mode 'go-mode
     "xb" 'go-build)
+
+  (defun canftin-go-mode ()
+    (local-set-key (kbd "C-c C-c") 'compile)
+    (local-set-key (kbd "C-c C-k") 'godoc)
+    (local-set-key (kbd "M-j") 'godef-jump)
+    (local-set-key (kbd "C-c C-f") 'go-test-current-file)
+    (local-set-key (kbd "C-c C-t") 'go-test-current-project)
+    (local-set-key (kbd "C-c C-p") 'go-test-current-benchmark)
+    (local-set-key (kbd "C-x x") 'go-run)
+    (local-set-key (kbd "C-c C-e") 'go-errcheck)
+    (local-set-key (kbd "C-c C-p") 'go-test-current-benchmark)
+    (local-set-key (kbd "C-c C-g") 'go-goto-imports)
+    (setq go-test-verbose t))
+  (add-hook 'go-mode-hook 'canftin-go-mode)
   ;; ============ go setting ============
 
 
