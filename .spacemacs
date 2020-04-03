@@ -1190,6 +1190,35 @@ It should only modify the values of Spacemacs settings."
   ;; (setq tramp-mode nil)
   (setq tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
 
+  ;; performance
+  ;; boost find file and load saved persp layout  performance
+  ;; which will break some function on windows platform
+  ;; eg. known issues: magit related buffer color, reopen will fix it
+  (when (spacemacs/system-is-mswindows)
+    (progn (setq find-file-hook nil)
+           (setq vc-handled-backends nil)
+           (setq magit-refresh-status-buffer nil)
+           (add-hook 'find-file-hook 'spacemacs/check-large-file)
+
+           ;; emax.7z in not under pdumper release
+           ;; https://github.com/m-parashar/emax64/releases/tag/pdumper-20180619
+           (defvar emax-root (concat (expand-file-name "~") "/emax"))
+
+           (when (file-exists-p emax-root)
+             (progn
+               (defvar emax-root (concat (expand-file-name "~") "/emax"))
+               (defvar emax-bin64 (concat emax-root "/bin64"))
+               (defvar emax-mingw64 (concat emax-root "/mingw64/bin"))
+               (defvar emax-lisp (concat emax-root "/lisp"))
+
+               (setq exec-path (cons emax-bin64 exec-path))
+               (setenv "PATH" (concat emax-bin64 ";" (getenv "PATH")))
+
+               (setq exec-path (cons emax-mingw64 exec-path))
+               (setenv "PATH" (concat emax-mingw64 ";" (getenv "PATH")))
+               ))
+
+           (add-hook 'projectile-mode-hook '(lambda () (remove-hook 'find-file-hook #'projectile-find-file-hook-function)))))
   ;; ---------------- Others ----------------
 
 
