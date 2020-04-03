@@ -103,7 +103,9 @@ This function should only modify configuration layer settings."
                       auto-completion-tab-key-behavior 'complete ;;'cycle
                       auto-completion-complete-with-key-sequence "jk"
                       auto-completion-complete-with-key-sequence-delay 0.1
+                      auto-completion-idle-delay 0.2
                       auto-completion-enable-snippets-in-popup t
+                      auto-completion-use-company-box t
                       auto-completion-enable-help-tooltip nil
                       auto-completion-enable-sort-by-usage t
                       auto-completion-private-snippets-directory "d:/linux_home/.emacs.d/private/yasnippets"
@@ -1182,7 +1184,12 @@ It should only modify the values of Spacemacs settings."
   (define-key global-map (kbd "M-g z") 'dumb-jump-go-prefer-external-other-window)
   (setq dumb-jump-selector 'ivy) ;; (setq dumb-jump-selector 'helm)
   (dumb-jump-mode)
-  
+
+  ;; tramp-mode
+  ;; https://github.com/syl20bnr/spacemacs/issues/2705
+  ;; (setq tramp-mode nil)
+  (setq tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
+
   ;; ---------------- Others ----------------
 
 
