@@ -157,7 +157,16 @@ This function should only modify configuration layer settings."
      all-the-icons-dired
      all-the-icons-ivy
      beacon
-     dumb-jump
+     (dumb-jump
+      :bind (("M-g o" . dumb-jump-go-other-window)
+             ("M-g j" . dumb-jump-go)
+             ("M-g b" . dumb-jump-back)
+             ("M-g i" . dumb-jump-go-prompt)
+             ("M-g x" . dumb-jump-go-prefer-external)
+             ("M-g z" . dumb-jump-go-prefer-external-other-window))
+      :config (setq dumb-jump-selector 'ivy) ;; (setq dumb-jump-selector 'helm)
+      :ensure
+      )
      git-messenger
      highlight-indent-guides
      mode-icons
@@ -759,7 +768,7 @@ It should only modify the values of Spacemacs settings."
   (setq geiser-chez-binary "chicken")
   (setq geiser-active-implementations '(chicken))
   (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hook-scheme-mode)
-;; ============ scheme setting ============
+  ;; ============ scheme setting ============
 
   ;; ============ haskell setting ============
   ;; Indentation doesn't reset when pressing return after an empty line
@@ -1150,6 +1159,16 @@ It should only modify the values of Spacemacs settings."
 
   ;;(setq initial-frame-alist '((top . 30) (left . 700) (width . 212) (height . 81)))
 
+  ;; dumb-jump
+  (define-key global-map (kbd "M-g o") 'dumb-jump-go-other-window)
+  (define-key global-map (kbd "M-g j") 'dumb-jump-go)
+  (define-key global-map (kbd "M-g b") 'dumb-jump-back)
+  (define-key global-map (kbd "M-g i") 'dumb-jump-go-prompt)
+  (define-key global-map (kbd "M-g x") 'dumb-jump-go-prefer-external)
+  (define-key global-map (kbd "M-g z") 'dumb-jump-go-prefer-external-other-window)
+  (setq dumb-jump-selector 'ivy) ;; (setq dumb-jump-selector 'helm)
+  (dumb-jump-mode)
+  
   ;; ---------------- Others ----------------
 
 
