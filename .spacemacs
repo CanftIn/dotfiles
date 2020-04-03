@@ -810,6 +810,46 @@ It should only modify the values of Spacemacs settings."
   (setq inferior-fsharp-program "D:/Microsoft Visual Studio/Common7/IDE/CommonExtensions/Microsoft/FSharp/Fsi.exe")
   ;; ============ fsharo setting ============
 
+  ;; ============ go setting ============
+
+  ;; go build/install
+  (setq default-go-package "")
+
+  (defun go-build (&optional pkg)
+    (interactive
+     (list (read-string (format "Package Name[%s]: " default-go-package) nil nil "")))
+
+    (if (not (string= pkg ""))
+        (setq default-go-package pkg))
+
+    (if (string= current-project-path "")
+        (message "You MUST set current-project-path FIRST!")
+      (projectile-with-default-dir current-project-path
+        (projectile-run-compilation (concat "go build " default-go-package))))
+    )
+
+  (defun go-install (&optional pkg)
+    (interactive
+     (list (read-string (format "Package Name[%s]: " default-go-package) nil nil "")))
+
+    (if (not (string= pkg ""))
+        (setq default-go-package pkg))
+
+    (if (string= current-project-path "")
+        (message "You MUST set current-project-path FIRST!")
+      (projectile-with-default-dir current-project-path
+        (projectile-run-compilation (concat "go install " default-go-package))))
+  )
+
+  ;; set shortcuts
+  (spacemacs/set-leader-keys-for-major-mode 'go-mode
+    "xi" 'go-install)
+
+  (spacemacs/set-leader-keys-for-major-mode 'go-mode
+    "xb" 'go-build)
+  ;; ============ go setting ============
+
+
   ;; ---------------- language settings ----------------
 
 
