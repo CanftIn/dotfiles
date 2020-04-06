@@ -24,7 +24,7 @@ This function should only modify configuration layer settings."
      html
      sql
      (haskell :variables
-              haskell-completion-backend 'dante;;'lsp ;;'ghci 'dante
+              haskell-completion-backend 'lsp ;;'ghci 'dante
               haskell-enable-hindent t
               haskell-enable-hindent-style "johan-tibell")
      (c-c++ :variables
@@ -43,7 +43,11 @@ This function should only modify configuration layer settings."
      scheme
      racket
      (clojure :variables
-              clojure-enable-fancify-symbols nil)
+              clojure-enable-fancify-symbols t
+              clojure-enable-sayid t
+              clojure-enable-clj-refactor t
+              clojure-enable-linters '(clj-kondo joker)
+              )
      common-lisp
      emacs-lisp
      ocaml
@@ -183,12 +187,20 @@ This function should only modify configuration layer settings."
      keyfreq
      go-playground
      gotest
+     go-autocomplete
      doom-themes
      esup
      yascroll
      (forge
        :after magit)
-   )
+     ;; (flycheck-clojure
+     ;;  :defer t
+     ;;  :commands (flycheck-clojure-setup)
+     ;;  :config
+     ;;  (eval-after-load 'flycheck
+     ;;    '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+     ;;  (add-hook 'after-init-hook #'global-flycheck-mode))
+     )
 
    dotspacemacs-frozen-packages '()
 
@@ -872,6 +884,14 @@ It should only modify the values of Spacemacs settings."
     (local-set-key (kbd "C-c C-g") 'go-goto-imports)
     (setq go-test-verbose t))
   (add-hook 'go-mode-hook 'canftin-go-mode)
+
+  (add-hook 'completion-at-point-functions 'go-complete-at-point)
+
+  ;; temporarily deal. uncomment golang only.
+  ;;(require 'go-autocomplete)
+  ;;(require 'auto-complete-config)
+  ;;(ac-config-default)
+  ;;(setq popup-use-optimized-column-computation nil)
   ;; ============ go setting ============
 
 
@@ -1219,6 +1239,10 @@ It should only modify the values of Spacemacs settings."
                ))
 
            (add-hook 'projectile-mode-hook '(lambda () (remove-hook 'find-file-hook #'projectile-find-file-hook-function)))))
+
+  ;; whitespace mode
+  (whitespace-mode)
+
   ;; ---------------- Others ----------------
 
 
