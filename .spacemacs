@@ -192,7 +192,8 @@ This function should only modify configuration layer settings."
      esup
      yascroll
      (forge
-       :after magit)
+      :after magit)
+     clojure-mode-extra-font-locking
      ;; (flycheck-clojure
      ;;  :defer t
      ;;  :commands (flycheck-clojure-setup)
@@ -207,7 +208,7 @@ This function should only modify configuration layer settings."
    dotspacemacs-excluded-packages
    '(
      ensime
-   )
+     )
 
    dotspacemacs-install-packages 'used-only))
 
@@ -763,6 +764,20 @@ It should only modify the values of Spacemacs settings."
   ;; clojure ',-g-g' command for java source code
   ;;(setq cider-jdk-src-paths '("C:/Program Files/Java/jdk1.8.0_171/src"))
   (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hook-clojure-mode)
+
+  (require 'clojure-mode-extra-font-locking)
+  (add-hook 'clojure-mode-hook #'smartparens-strict-mode)
+  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'clojure-mode-hook #'aggressive-indent-mode)
+  ;; Pretty print in Clojure to use the Fast Idiomatic Pretty-Printer. This is approximately 5-10x faster than clojure.core/pprint
+  (setq cider-pprint-fn 'fipp)
+  ;; Indentation of function forms
+  ;; https://github.com/clojure-emacs/clojure-mode#indentation-of-function-forms
+  (setq clojure-indent-style 'align-arguments)
+  ;;
+  ;; Vertically align s-expressions
+  ;; https://github.com/clojure-emacs/clojure-mode#vertical-alignment
+  (setq clojure-align-forms-automatically t)
   ;; ============ clojure setting ============
 
   ;; ============ python setting ============
