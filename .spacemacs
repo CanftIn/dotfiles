@@ -110,7 +110,7 @@ This function should only modify configuration layer settings."
                       auto-completion-idle-delay 0.2
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-use-company-box t
-                      auto-completion-enable-help-tooltip nil
+                      auto-completion-enable-help-tooltip 'manual
                       auto-completion-enable-sort-by-usage t
                       auto-completion-private-snippets-directory "d:/linux_home/.emacs.d/private/yasnippets"
                       )
@@ -127,6 +127,7 @@ This function should only modify configuration layer settings."
      ;; treemacs
      neotree
      deft
+     imenu-list
      (ranger :variables
              ranger-show-preview t
              ranger-show-hidden t
@@ -141,7 +142,11 @@ This function should only modify configuration layer settings."
             shell-default-height 30
             shell-default-position 'bottom)
      ;; spell-checking
-     syntax-checking
+     (syntax-checking :variables
+                      syntax-checking-enable-tooltips t
+                      syntax-checking-enable-by-default t
+                      syntax-checking-use-original-bitmaps t
+                      )
      (version-control :variables
                       version-control-diff-tool 'diff-hl
                       version-control-diff-side 'left
@@ -201,6 +206,25 @@ This function should only modify configuration layer settings."
      ;;  (eval-after-load 'flycheck
      ;;    '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
      ;;  (add-hook 'after-init-hook #'global-flycheck-mode))
+     (parinfer
+      :ensure t
+      :bind
+      (("C-," . parinfer-toggle-mode))
+      :init
+      (progn
+        (setq parinfer-extensions
+              '(defaults       ; should be included.
+                 pretty-parens  ; different paren styles for different modes.
+                 evil           ; If you use Evil.
+                 lispy          ; If you use Lispy. With this extension, you should install Lispy and do not enable lispy-mode directly.
+                 paredit        ; Introduce some paredit commands.
+                 smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
+                 smart-yank))   ; Yank behavior depend on mode.
+        (add-hook 'clojure-mode-hook #'parinfer-mode)
+        (add-hook 'emacs-lisp-mode-hook #'parinfer-mode)
+        (add-hook 'common-lisp-mode-hook #'parinfer-mode)
+        (add-hook 'scheme-mode-hook #'parinfer-mode)
+        (add-hook 'lisp-mode-hook #'parinfer-mode)))
      )
 
    dotspacemacs-frozen-packages '()
@@ -476,8 +500,8 @@ It should only modify the values of Spacemacs settings."
 
   )
 
-(defun dotspacemacs/user-load ()
-  )
+(defun dotspacemacs/user-load ())
+
 
 (defun dotspacemacs/user-config ()
   ;; ---------------- copy && paste ----------------
@@ -488,15 +512,15 @@ It should only modify the values of Spacemacs settings."
     (if (display-graphic-p)
         (progn
           (message "Yanked region to x-clipboard!")
-          (call-interactively 'clipboard-kill-ring-save)
-          )
+          (call-interactively 'clipboard-kill-ring-save))
+
       (if (region-active-p)
           (progn
             (shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
             (message "Yanked region to clipboard!")
             (deactivate-mark))
-        (message "No region active; can't yank to clipboard!")))
-    )
+        (message "No region active; can't yank to clipboard!"))))
+
 
   (defun paste-from-clipboard ()
     "Pastes from x-clipboard."
@@ -504,11 +528,11 @@ It should only modify the values of Spacemacs settings."
     (if (display-graphic-p)
         (progn
           (clipboard-yank)
-          (message "graphics active")
-          )
-      (insert (shell-command-to-string "xsel -o -b"))
-      )
-    )
+          (message "graphics active"))
+
+      (insert (shell-command-to-string "xsel -o -b"))))
+
+
   (evil-leader/set-key "o y" 'copy-to-clipboard)
   (evil-leader/set-key "o p" 'paste-from-clipboard)
   ;; ---------------- copy && paste ----------------
@@ -757,8 +781,12 @@ It should only modify the values of Spacemacs settings."
 
   ;; ---------------- Setting Chinese Font ----------------
 
- 
+  
   ;; ---------------- language settings ----------------
+  ;; ============ emacs lisp setting ============
+
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+  ;; ============ emacs lisp setting ============
 
   ;; ============ clojure setting ============
   ;; clojure ',-g-g' command for java source code
@@ -815,8 +843,8 @@ It should only modify the values of Spacemacs settings."
 
   (setq lsp-haskell-process-args-hie '("exec" "ghcide" "--" "--lsp")
         lsp-haskell-process-path-hie "stack"
-        lsp-haskell-process-wrapper-function (lambda (argv) (cons (car argv) (cddr argv)))
-        )
+        lsp-haskell-process-wrapper-function (lambda (argv) (cons (car argv) (cddr argv))))
+  
   (add-hook 'haskell-mode-hook
             #'lsp)
   ;;(setq lsp-haskell-process-args-hie (list "-d" "-l" (make-temp-file "hie." nil ".log")))
@@ -863,8 +891,8 @@ It should only modify the values of Spacemacs settings."
     (if (string= current-project-path "")
         (message "You MUST set current-project-path FIRST!")
       (projectile-with-default-dir current-project-path
-        (projectile-run-compilation (concat "go build " default-go-package))))
-    )
+        (projectile-run-compilation (concat "go build " default-go-package)))))
+
 
   (defun go-install (&optional pkg)
     (interactive
@@ -876,8 +904,8 @@ It should only modify the values of Spacemacs settings."
     (if (string= current-project-path "")
         (message "You MUST set current-project-path FIRST!")
       (projectile-with-default-dir current-project-path
-        (projectile-run-compilation (concat "go install " default-go-package))))
-  )
+        (projectile-run-compilation (concat "go install " default-go-package)))))
+
 
   ;; set shortcuts
   (spacemacs/set-leader-keys-for-major-mode 'go-mode
@@ -934,13 +962,13 @@ It should only modify the values of Spacemacs settings."
     (org-indent-mode)
     (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
 
-    (variable-pitch-mode 1)
+    (variable-pitch-mode 1))
 
-    ;; (turn-on-olivetti-mode)
-    ;; (with-eval-after-load 'olivetti
-    ;;   (olivetti-set-width 81)
-    ;;   (olivetti-mode 1))
-    )
+  ;; (turn-on-olivetti-mode)
+  ;; (with-eval-after-load 'olivetti
+  ;;   (olivetti-set-width 81)
+  ;;   (olivetti-mode 1))
+
 
   (add-hook 'org-mode-hook 'my-org-config/after-org-mode-load)
 
@@ -949,16 +977,16 @@ It should only modify the values of Spacemacs settings."
   ;;You can view my daily agenda with SPC o d
   (defun my-org-daily-agenda ()
     (interactive)
-    (org-agenda nil "d")
-    )
+    (org-agenda nil "d"))
+
 
   (spacemacs/set-leader-keys "od" 'my-org-daily-agenda)
-  
+
   ;;Add a new todo with preselected template with SPC o t
   (defun my-org-add-todo ()
     (interactive)
-    (org-capture nil "t")
-    )
+    (org-capture nil "t"))
+
   (spacemacs/set-leader-keys "ot" 'my-org-add-todo)
 
   (spacemacs/set-leader-keys "oc" 'org-capture)
@@ -971,9 +999,9 @@ It should only modify the values of Spacemacs settings."
     (interactive)
     (helm-browse-project-find-files '(
                                       "~/CanftIn-GTD"
-                                      "~/org"
-                                      ))
-    )
+                                      "~/org")))
+
+
 
   (spacemacs/set-leader-keys "of" 'my-org-helm-find-file)
 
@@ -1010,20 +1038,20 @@ It should only modify the values of Spacemacs settings."
                                       ((agenda "" (
                                                    (org-agenda-overriding-header "THIS WEEK")
                                                    (org-agenda-span 'day)
-                                                   (org-agenda-scheduled-leaders '("   " "%2dx"))
-                                                   ))
+                                                   (org-agenda-scheduled-leaders '("   " "%2dx"))))
+
                                        (tags "+inbox"
                                              ((org-agenda-overriding-header "INBOX: Entries to refile")))
                                        (todo "VERIFY"
-                                             ((org-agenda-overriding-header "FINAL VERIFICATION PENDING")))
-                                       )
-                                      )
+                                             ((org-agenda-overriding-header "FINAL VERIFICATION PENDING")))))
+
+
                                      ("w" "WEEKLY REVIEW"
                                       (
                                        (todo "DONE"
                                              (
-                                              (org-agenda-overriding-header "DONE!")
-                                              ))
+                                              (org-agenda-overriding-header "DONE!")))
+
                                        (todo "CANCELLED"
                                              ((org-agenda-overriding-header "CANCELLED")))
                                        (todo "TODO"
@@ -1031,17 +1059,17 @@ It should only modify the values of Spacemacs settings."
                                               (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled 'timestamp))))
                                        (todo "WAIT"
                                              ((org-agenda-overriding-header "WAIT: Items on hold (without time attached)")
-                                              (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled 'timestamp))))
-                                       )
-                                      )
+                                              (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled 'timestamp))))))
+
+
                                      ("d" "DAILY"
                                       ((agenda "" ((org-agenda-span 'day)
                                                    (org-agenda-compact-blocks t)
                                                    ;; (org-agenda-deadline-leaders)
                                                    ;; (org-agenda-scheduled-leaders)
                                                    (org-agenda-prefix-format '(
-                                                                               (agenda . "  %?-12t")
-                                                                               ))
+                                                                               (agenda . "  %?-12t")))
+
                                                    (org-super-agenda-groups
                                                     '(
                                                       (:name "⏰ Calendar" :time-grid t)
@@ -1057,22 +1085,22 @@ It should only modify the values of Spacemacs settings."
                                                       (:name "⭐ Important" :priority "A")
                                                       (:name "📌 Routines" :category "Routines")
 
-                                                      (:auto-category t)
-                                                      ))
-                                                   ))
+                                                      (:auto-category t)))))
+
+
                                        (alltodo "" ((org-agenda-overriding-header "")
                                                     (org-agenda-prefix-format '(
-                                                                                (todo . "  ")
-                                                                                ))
+                                                                                (todo . "  ")))
+
                                                     (org-super-agenda-groups
                                                      '(
                                                        (:name "Inbox" :tag "inbox")
                                                        (:name "Verify" :todo "VERIFY")
-                                                       (:discard (:anything t))
-                                                       )
-                                                     ))))
-                                      )
-                                     ))
+                                                       (:discard (:anything t))))))))))
+
+
+
+
   ;; ============ super agenda ============
 
   (setq org-refile-use-outline-path 'file)
@@ -1104,18 +1132,18 @@ It should only modify the values of Spacemacs settings."
          (rainbow-9    "#ff5555")
          (rainbow-10   "#a0522d")
 
-         (variable-pitch-font `(:family "Iosevka" ;;"iA Writer Quattro S"
-                                        ))
-         (fixed-pitch-font    `(:family "Iosevka Nerd Font" ))
-         (fixed-pitch-font-alt `(:family "Iosevka" ;; "iA Writer Mono S"
-                                         )))
+         (variable-pitch-font `(:family "Iosevka")) ;;"iA Writer Quattro S"
+
+         (fixed-pitch-font    `(:family "Iosevka Nerd Font"))
+         (fixed-pitch-font-alt `(:family "Iosevka"))) ;; "iA Writer Mono S"
+
 
     (setq org-todo-keyword-faces (list
                                   `("TODO"
                                     ,@fixed-pitch-font
                                     :foreground ,comment
-                                    :weight bold
-                                    )
+                                    :weight bold)
+
                                   `("NEXT"
                                     ,@fixed-pitch-font
                                     :foreground ,warning
@@ -1139,13 +1167,13 @@ It should only modify the values of Spacemacs settings."
                                   `("CANCELLED"
                                     ,@fixed-pitch-font
                                     :foreground ,rainbow-9
-                                    :weight bold)
-                                  ))
-    )
+                                    :weight bold))))
+
+
   (setq org-todo-keywords
         '(
-          (sequence "TODO" "NEXT" "WAIT" "|" "DONE(d)" "CANCELED")
-          ))
+          (sequence "TODO" "NEXT" "WAIT" "|" "DONE(d)" "CANCELED")))
+
   ;;
   ;;  (setq org-todo-keyword-faces
   ;;        '(("TODO" . (:foreground "#ff39a3" :weight bold))
@@ -1194,10 +1222,10 @@ It should only modify the values of Spacemacs settings."
   ;;https://github.com/off99555/.spacemacs.d
   (setq-default evil-escape-key-sequence "fd")
   (setq-default evil-escape-unordered-key-sequence t)
-  (setq-default scroll-margin 5
-                ;; scroll-conservatively 9999
-                ;; scroll-step 1
-                )
+  (setq-default scroll-margin 5)
+  ;; scroll-conservatively 9999
+  ;; scroll-step 1
+
   (setq-default google-translate-default-source-language "en"
                 google-translate-default-target-language "th")
   ;; useless, go spacemacs/init() for setting
@@ -1250,14 +1278,16 @@ It should only modify the values of Spacemacs settings."
                (setenv "PATH" (concat emax-bin64 ";" (getenv "PATH")))
 
                (setq exec-path (cons emax-mingw64 exec-path))
-               (setenv "PATH" (concat emax-mingw64 ";" (getenv "PATH")))
-               ))
+               (setenv "PATH" (concat emax-mingw64 ";" (getenv "PATH")))))
+
 
            (add-hook 'projectile-mode-hook '(lambda () (remove-hook 'find-file-hook #'projectile-find-file-hook-function)))))
 
   ;; whitespace mode
-  (whitespace-mode)
+  ;;(whitespace-mode)
 
+  ;; parinfer
+  ;;(parinfer-toggle-mode)
   ;; ---------------- Others ----------------
 
 
@@ -1371,7 +1401,6 @@ It should only modify the values of Spacemacs settings."
    '(git-messenger:use-magit-popup t))
 
   ;; ---------------- Some theme Settings ----------------
-
   )
 
 (defun dotspacemacs/emacs-custom-settings ()
@@ -1379,29 +1408,29 @@ It should only modify the values of Spacemacs settings."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["#0a0814" "#f2241f" "#67b11d" "#b1951d" "#4f97d7" "#a31db1" "#28def0" "#b2b2b2"])
- '(evil-want-Y-yank-to-eol nil)
- '(git-messenger:use-magit-popup t)
- '(haskell-stylish-on-save t t)
- '(org-agenda-files (quote ("d:/linux_home/CanftIn-GTD/todo.org")))
- '(package-selected-packages
-   (quote
-    (forge utop tuareg caml seeing-is-believing rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv rake ocp-indent ob-elixir minitest flycheck-ocaml merlin flycheck-mix flycheck-credo dune chruby bundler inf-ruby alchemist elixir-mode mvn meghanada maven-test-mode groovy-mode groovy-imports pcache gradle-mode yapfify stickyfunc-enhance pytest pyenv-mode py-isort pippel pipenv pyvenv pip-requirements live-py-mode importmagic epc ctable concurrent helm-pydoc helm-gtags helm-cscope xcscope ggtags cython-mode counsel-gtags company-anaconda anaconda-mode pythonic ox-twbs ox-gfm material-theme emojify ht emoji-cheat-sheet-plus company-emoji all-the-icons-dired yasnippet-snippets ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org symon string-inflection spaceline-all-the-icons sound-wav smeargle restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters prodigy popwin persp-mode pcre2el password-generator paradox overseer orgit org-tree-slide org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file neotree nameless mwim move-text mmm-mode markdown-toc magit-svn magit-gitflow macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets graphviz-dot-mode google-translate google-c-style golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flycheck-rtags flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu engine-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline disaster diminish diff-hl define-word counsel-projectile company-statistics company-rtags company-ghci company-cabal company-c-headers column-enforce-mode color-identifiers-mode cmm-mode clojure-snippets clean-aindent-mode clang-format cider-eval-sexp-fu cider centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-compile aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell 2048-game)))
- '(pdf-view-midnight-colors (quote ("#b2b2b2" . "#292b2e"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(markup-title-0-face ((t (:inherit markup-gen-face :height 1.6))))
- '(markup-title-1-face ((t (:inherit markup-gen-face :height 1.5))))
- '(markup-title-2-face ((t (:inherit markup-gen-face :height 1.4))))
- '(markup-title-3-face ((t (:inherit markup-gen-face :weight bold :height 1.3))))
- '(markup-title-5-face ((t (:inherit markup-gen-face :underline t :height 1.1)))))
-)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(ansi-color-names-vector
+     ["#0a0814" "#f2241f" "#67b11d" "#b1951d" "#4f97d7" "#a31db1" "#28def0" "#b2b2b2"])
+   '(evil-want-Y-yank-to-eol nil)
+   '(git-messenger:use-magit-popup t)
+   '(haskell-stylish-on-save t t)
+   '(org-agenda-files (quote ("d:/linux_home/CanftIn-GTD/todo.org")))
+   '(package-selected-packages
+     (quote
+      (forge utop tuareg caml seeing-is-believing rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv rake ocp-indent ob-elixir minitest flycheck-ocaml merlin flycheck-mix flycheck-credo dune chruby bundler inf-ruby alchemist elixir-mode mvn meghanada maven-test-mode groovy-mode groovy-imports pcache gradle-mode yapfify stickyfunc-enhance pytest pyenv-mode py-isort pippel pipenv pyvenv pip-requirements live-py-mode importmagic epc ctable concurrent helm-pydoc helm-gtags helm-cscope xcscope ggtags cython-mode counsel-gtags company-anaconda anaconda-mode pythonic ox-twbs ox-gfm material-theme emojify ht emoji-cheat-sheet-plus company-emoji all-the-icons-dired yasnippet-snippets ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org symon string-inflection spaceline-all-the-icons sound-wav smeargle restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters prodigy popwin persp-mode pcre2el password-generator paradox overseer orgit org-tree-slide org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file neotree nameless mwim move-text mmm-mode markdown-toc magit-svn magit-gitflow macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets graphviz-dot-mode google-translate google-c-style golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flycheck-rtags flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu engine-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline disaster diminish diff-hl define-word counsel-projectile company-statistics company-rtags company-ghci company-cabal company-c-headers column-enforce-mode color-identifiers-mode cmm-mode clojure-snippets clean-aindent-mode clang-format cider-eval-sexp-fu cider centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-compile aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell 2048-game)))
+   '(pdf-view-midnight-colors (quote ("#b2b2b2" . "#292b2e"))))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(markup-title-0-face ((t (:inherit markup-gen-face :height 1.6))))
+   '(markup-title-1-face ((t (:inherit markup-gen-face :height 1.5))))
+   '(markup-title-2-face ((t (:inherit markup-gen-face :height 1.4))))
+   '(markup-title-3-face ((t (:inherit markup-gen-face :weight bold :height 1.3))))
+   '(markup-title-5-face ((t (:inherit markup-gen-face :underline t :height 1.1)))))
+  )
