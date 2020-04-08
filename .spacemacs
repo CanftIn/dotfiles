@@ -28,12 +28,11 @@ This function should only modify configuration layer settings."
               haskell-enable-hindent t
               haskell-enable-hindent-style "johan-tibell")
      (c-c++ :variables
-           =c-c++-backend= 'lsp-clangd
+           =c-c++-backend= 'lsp-ccls;;'lsp-clangd
            c-c++-adopt-subprojects t
            c-c++-lsp-enable-semantic-highlight 'rainbow
            c-c++-default-mode-for-headers 'c++-mode
-           c++-enable-organize-includes-on-save t
-           c-c++-enable-clang-format-on-save t
+           ;;c++-enable-organize-includes-on-save t
            c-c++-enable-clang-format-on-save t
            c-c++-enable-google-style t
            c-c++-enable-google-newline t
@@ -225,6 +224,216 @@ This function should only modify configuration layer settings."
         (add-hook 'common-lisp-mode-hook #'parinfer-mode)
         (add-hook 'scheme-mode-hook #'parinfer-mode)
         (add-hook 'lisp-mode-hook #'parinfer-mode)))
+
+     (helm-gtags
+      :init
+      (progn
+        (setq helm-gtags-ignore-case t
+              helm-gtags-auto-update t
+              helm-gtags-use-input-at-cursor t
+              helm-gtags-pulse-at-cursor t
+              helm-gtags-prefix-key "\C-cg"
+              helm-gtags-suggested-key-mapping t)
+
+        ;; Enable helm-gtags-mode in Dired so you can jump to any tag
+        ;; when navigate project tree with Dired
+        (add-hook 'dired-mode-hook 'helm-gtags-mode)
+
+        ;; Enable helm-gtags-mode in Eshell for the same reason as above
+        (add-hook 'eshell-mode-hook 'helm-gtags-mode)
+
+        ;; Enable helm-gtags-mode in languages that GNU Global supports
+        (add-hook 'c-mode-hook 'helm-gtags-mode)
+        (add-hook 'c++-mode-hook 'helm-gtags-mode)
+        (add-hook 'java-mode-hook 'helm-gtags-mode)
+        (add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+        ;; key bindings
+        (with-eval-after-load 'helm-gtags
+          (define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+          (define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+          (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+          (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+          (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+          (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history))))
+     ede
+     ggtags
+     (cc-mode
+      :init
+      (define-key c-mode-map  [(tab)] 'company-complete)
+      (define-key c++-mode-map  [(tab)] 'company-complete))
+     semantic
+     dtrt-indent
+     irony
+     flycheck
+     flycheck-rtags
+     flycheck-irony
+
+     (ivy
+      :init
+      (progn
+        (ivy-mode 1)
+        (setq ivy-use-virtual-buffers t)
+        (global-set-key (kbd "C-c s") 'swiper)))
+
+     (counsel
+      :bind
+      (("M-x" . counsel-M-x)
+       ("M-y" . counsel-yank-pop)
+       ("C-c r" . counsel-recentf)
+       ("C-x C-f" . counsel-find-file)
+       ("<f1> f" . counsel-describe-function)
+       ("<f1> v" . counsel-describe-variable)
+       ("<f1> l" . counsel-load-library)
+       ("C-h f" . counsel-describe-function)
+       ("C-h v" . counsel-describe-variable)
+       ("C-h l" . counsel-load-library)))
+
+     (counsel-projectile
+      :init
+      (counsel-projectile-mode))
+
+     (helm
+      :init
+      (progn
+        (require 'helm-config)
+        (require 'helm-grep)
+        ;; To fix error at compile:
+        ;; Error (bytecomp): Forgot to expand macro with-helm-buffer in
+        ;; (with-helm-buffer helm-echo-input-in-header-line)
+        (if (version< "26.0.50" emacs-version)
+            (eval-when-compile (require 'helm-lib)))
+
+        (defun helm-hide-minibuffer-maybe ()
+          (when (with-helm-buffer helm-echo-input-in-header-line)
+            (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+              (overlay-put ov 'window (selected-window))
+              (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+                                      `(:background ,bg-color :foreground ,bg-color)))
+              (setq-local cursor-type nil))))
+
+        (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+        ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+        ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+        ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+        (global-set-key (kbd "C-c h") 'helm-command-prefix)
+        (global-unset-key (kbd "C-x c"))
+
+        (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+        (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+        (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+        (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
+        (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
+        (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
+
+        (when (executable-find "curl")
+          (setq helm-google-suggest-use-curl-p t))
+
+        (setq helm-google-suggest-use-curl-p t
+              helm-scroll-amount 4 ; scroll 4 lines other window using M-<next>/M-<prior>
+              ;; helm-quick-update t ; do not display invisible candidates
+              helm-ff-search-library-in-sexp t ; search for library in `require' and `declare-function' sexp.
+
+              ;; you can customize helm-do-grep to execute ack-grep
+              ;; helm-grep-default-command "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
+              ;; helm-grep-default-recurse-command "ack-grep -H --smart-case --no-group --no-color %e %p %f"
+              helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
+
+              helm-echo-input-in-header-line t
+
+              ;; helm-candidate-number-limit 500 ; limit the number of displayed canidates
+              helm-ff-file-name-history-use-recentf t
+              helm-move-to-line-cycle-in-source t ; move to end or beginning of source when reaching top or bottom of source.
+              helm-buffer-skip-remote-checking t
+
+              helm-mode-fuzzy-match t
+
+              helm-buffers-fuzzy-matching t ; fuzzy matching buffer names when non-nil
+                                        ; useful in helm-mini that lists buffers
+              helm-org-headings-fontify t
+              ;; helm-find-files-sort-directories t
+              ;; ido-use-virtual-buffers t
+              helm-semantic-fuzzy-match t
+              helm-M-x-fuzzy-match t
+              helm-imenu-fuzzy-match t
+              helm-lisp-fuzzy-completion t
+              ;; helm-apropos-fuzzy-match t
+              helm-buffer-skip-remote-checking t
+              helm-locate-fuzzy-match t
+              helm-display-header-line nil)
+
+        (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+        (global-set-key (kbd "M-x") 'helm-M-x)
+        (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+        (global-set-key (kbd "C-x b") 'helm-buffers-list)
+        (global-set-key (kbd "C-x C-f") 'helm-find-files)
+        (global-set-key (kbd "C-c r") 'helm-recentf)
+        (global-set-key (kbd "C-h SPC") 'helm-all-mark-rings)
+        (global-set-key (kbd "C-c h o") 'helm-occur)
+        (global-set-key (kbd "C-c h o") 'helm-occur)
+
+        (global-set-key (kbd "C-c h w") 'helm-wikipedia-suggest)
+        (global-set-key (kbd "C-c h g") 'helm-google-suggest)
+
+        (global-set-key (kbd "C-c h x") 'helm-register)
+        ;; (global-set-key (kbd "C-x r j") 'jump-to-register)
+
+        (define-key 'help-command (kbd "C-f") 'helm-apropos)
+        (define-key 'help-command (kbd "r") 'helm-info-emacs)
+        (define-key 'help-command (kbd "C-l") 'helm-locate-library)
+
+        ;; use helm to list eshell history
+        (add-hook 'eshell-mode-hook
+                  #'(lambda ()
+                      (define-key eshell-mode-map (kbd "M-l")  'helm-eshell-history)))
+
+        ;;; Save current position to mark ring
+        (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
+
+        ;; show minibuffer history with Helm
+        (define-key minibuffer-local-map (kbd "M-p") 'helm-minibuffer-history)
+        (define-key minibuffer-local-map (kbd "M-n") 'helm-minibuffer-history)
+
+        (define-key global-map [remap find-tag] 'helm-etags-select)
+
+        (define-key global-map [remap list-buffers] 'helm-buffers-list)
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; PACKAGE: helm-swoop                ;;
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; Locate the helm-swoop folder to your path
+        (use-package helm-swoop
+          :bind (("C-c h o" . helm-swoop)
+                 ("C-c s" . helm-multi-swoop-all))
+          :config
+          ;; When doing isearch, hand the word over to helm-swoop
+          (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+
+          ;; From helm-swoop to helm-multi-swoop-all
+          (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+
+          ;; Save buffer when helm-multi-swoop-edit complete
+          (setq helm-multi-swoop-edit-save t)
+
+          ;; If this value is t, split window inside the current window
+          (setq helm-swoop-split-with-multiple-windows t)
+
+          ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+          (setq helm-swoop-split-direction 'split-window-vertically)
+
+          ;; If nil, you can slightly boost invoke speed in exchange for text color
+          (setq helm-swoop-speed-or-color t))
+
+        (helm-mode 1)
+
+        (use-package helm-projectile
+          :init
+          (helm-projectile-on)
+          (setq projectile-completion-system 'helm)
+          (setq projectile-indexing-method 'alien))))
+
      )
 
    dotspacemacs-frozen-packages '()
@@ -781,8 +990,31 @@ It should only modify the values of Spacemacs settings."
 
   ;; ---------------- Setting Chinese Font ----------------
 
-  
+
   ;; ---------------- language settings ----------------
+  ;; ============ emacs lisp setting ============
+  (setq helm-gtags-prefix-key "\C-cg")
+
+  (ggtags-mode 1)
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+                (ggtags-mode 1))))
+
+  (dolist (map (list ggtags-mode-map dired-mode-map))
+    (define-key map (kbd "C-c g s") 'ggtags-find-other-symbol)
+    (define-key map (kbd "C-c g h") 'ggtags-view-tag-history)
+    (define-key map (kbd "C-c g r") 'ggtags-find-reference)
+    (define-key map (kbd "C-c g f") 'ggtags-find-file)
+    (define-key map (kbd "C-c g c") 'ggtags-create-tags)
+    (define-key map (kbd "C-c g u") 'ggtags-update-tags)
+    (define-key map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+    (define-key map (kbd "M-.") 'ggtags-find-tag-dwim)
+    (define-key map (kbd "M-,") 'pop-tag-mark)
+    (define-key map (kbd "C-c <") 'ggtags-prev-mark)
+    (define-key map (kbd "C-c >") 'ggtags-next-mark))
+  ;; ============ emacs lisp setting ============
+
   ;; ============ emacs lisp setting ============
 
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
@@ -1285,9 +1517,89 @@ It should only modify the values of Spacemacs settings."
 
   ;; whitespace mode
   ;;(whitespace-mode)
+  ;; activate whitespace-mode to view all whitespace characters
+  (global-set-key (kbd "C-c w") 'whitespace-mode)
 
   ;; parinfer
   ;;(parinfer-toggle-mode)
+
+  ;; cmake
+  (cmake-ide-setup)
+
+  ;; volatile-highlights
+  (volatile-highlights-mode t)
+
+  ;;Editing -> Undo -> Undo Tree
+  (global-undo-tree-mode 1)
+
+  ;; clean-aindent-mode
+  (add-hook 'prog-mode-hook 'clean-aindent-mode)
+
+  ;; dtrt indent
+  (dtrt-indent-mode 1)
+  (setq dtrt-indent-verbosity 0)
+
+  ;; hs-minor-mode for folding source code
+  (add-hook 'c-mode-common-hook 'hs-minor-mode)
+
+  ;; semantic
+  (semantic-mode 1)
+
+  (defun CanftIn/cedet-hook ()
+    (local-set-key "\C-c\C-j" 'semantic-ia-fast-jump)
+    (local-set-key "\C-c\C-s" 'semantic-ia-show-summary))
+
+  (add-hook 'c-mode-common-hook 'CanftIn/cedet-hook)
+  (add-hook 'c-mode-hook 'CanftIn/cedet-hook)
+  (add-hook 'c++-mode-hook 'CanftIn/cedet-hook)
+
+  ;; irony mode
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
+  (add-hook 'objc-mode-hook 'irony-mode)
+
+  (defun my-irony-mode-hook ()
+    (define-key irony-mode-map [remap completion-at-point]
+      'irony-completion-at-point-async)
+    (define-key irony-mode-map [remap complete-symbol]
+      'irony-completion-at-point-async))
+
+  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+  ;; flycheck
+  (add-hook 'c++-mode-hook 'flycheck-mode)
+  (add-hook 'c-mode-hook 'flycheck-mode)
+  (defun my-flycheck-rtags-setup ()
+    (flycheck-select-checker 'rtags)
+    (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
+    (setq-local flycheck-check-syntax-automatically nil))
+  ;; c-mode-common-hook is also called by c++-mode
+  (add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup)
+  (eval-after-load 'flycheck
+    '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+
+
+
+  ;; ede
+  (global-ede-mode)
+
+
+  ;; show whitespace in diff-mode
+  (add-hook 'diff-mode-hook (lambda ()
+                              (setq-local whitespace-style
+                                          '(face
+                                            tabs
+                                            tab-mark
+                                            spaces
+                                            space-mark
+                                            trailing
+                                            indentation::space
+                                            indentation::tab
+                                            newline
+                                            newline-mark))
+                              (whitespace-mode 1)))
+
   ;; ---------------- Others ----------------
 
 
@@ -1408,29 +1720,41 @@ It should only modify the values of Spacemacs settings."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(ansi-color-names-vector
-     ["#0a0814" "#f2241f" "#67b11d" "#b1951d" "#4f97d7" "#a31db1" "#28def0" "#b2b2b2"])
-   '(evil-want-Y-yank-to-eol nil)
-   '(git-messenger:use-magit-popup t)
-   '(haskell-stylish-on-save t t)
-   '(org-agenda-files (quote ("d:/linux_home/CanftIn-GTD/todo.org")))
-   '(package-selected-packages
-     (quote
-      (forge utop tuareg caml seeing-is-believing rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv rake ocp-indent ob-elixir minitest flycheck-ocaml merlin flycheck-mix flycheck-credo dune chruby bundler inf-ruby alchemist elixir-mode mvn meghanada maven-test-mode groovy-mode groovy-imports pcache gradle-mode yapfify stickyfunc-enhance pytest pyenv-mode py-isort pippel pipenv pyvenv pip-requirements live-py-mode importmagic epc ctable concurrent helm-pydoc helm-gtags helm-cscope xcscope ggtags cython-mode counsel-gtags company-anaconda anaconda-mode pythonic ox-twbs ox-gfm material-theme emojify ht emoji-cheat-sheet-plus company-emoji all-the-icons-dired yasnippet-snippets ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org symon string-inflection spaceline-all-the-icons sound-wav smeargle restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters prodigy popwin persp-mode pcre2el password-generator paradox overseer orgit org-tree-slide org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file neotree nameless mwim move-text mmm-mode markdown-toc magit-svn magit-gitflow macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets graphviz-dot-mode google-translate google-c-style golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flycheck-rtags flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu engine-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline disaster diminish diff-hl define-word counsel-projectile company-statistics company-rtags company-ghci company-cabal company-c-headers column-enforce-mode color-identifiers-mode cmm-mode clojure-snippets clean-aindent-mode clang-format cider-eval-sexp-fu cider centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-compile aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell 2048-game)))
-   '(pdf-view-midnight-colors (quote ("#b2b2b2" . "#292b2e"))))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(markup-title-0-face ((t (:inherit markup-gen-face :height 1.6))))
-   '(markup-title-1-face ((t (:inherit markup-gen-face :height 1.5))))
-   '(markup-title-2-face ((t (:inherit markup-gen-face :height 1.4))))
-   '(markup-title-3-face ((t (:inherit markup-gen-face :weight bold :height 1.3))))
-   '(markup-title-5-face ((t (:inherit markup-gen-face :underline t :height 1.1)))))
-  )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#0a0814" "#f2241f" "#67b11d" "#b1951d" "#4f97d7" "#a31db1" "#28def0" "#b2b2b2"])
+ '(evil-want-Y-yank-to-eol nil)
+ '(git-messenger:use-magit-popup t)
+ '(haskell-stylish-on-save t t)
+ '(org-agenda-files (quote ("d:/linux_home/CanftIn-GTD/todo.org")))
+ '(package-selected-packages
+   (quote
+    (forge utop tuareg caml seeing-is-believing rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv rake ocp-indent ob-elixir minitest flycheck-ocaml merlin flycheck-mix flycheck-credo dune chruby bundler inf-ruby alchemist elixir-mode mvn meghanada maven-test-mode groovy-mode groovy-imports pcache gradle-mode yapfify stickyfunc-enhance pytest pyenv-mode py-isort pippel pipenv pyvenv pip-requirements live-py-mode importmagic epc ctable concurrent helm-pydoc helm-gtags helm-cscope xcscope ggtags cython-mode counsel-gtags company-anaconda anaconda-mode pythonic ox-twbs ox-gfm material-theme emojify ht emoji-cheat-sheet-plus company-emoji all-the-icons-dired yasnippet-snippets ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org symon string-inflection spaceline-all-the-icons sound-wav smeargle restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters prodigy popwin persp-mode pcre2el password-generator paradox overseer orgit org-tree-slide org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file neotree nameless mwim move-text mmm-mode markdown-toc magit-svn magit-gitflow macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets graphviz-dot-mode google-translate google-c-style golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flycheck-rtags flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu engine-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline disaster diminish diff-hl define-word counsel-projectile company-statistics company-rtags company-ghci company-cabal company-c-headers column-enforce-mode color-identifiers-mode cmm-mode clojure-snippets clean-aindent-mode clang-format cider-eval-sexp-fu cider centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-compile aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell 2048-game)))
+ '(pdf-view-midnight-colors (quote ("#b2b2b2" . "#292b2e")))
+ '(safe-local-variable-values
+   (quote
+    ((cider-preferred-build-tool . "clojure-cli")
+     (typescript-backend . tide)
+     (typescript-backend . lsp)
+     (javascript-backend . tide)
+     (javascript-backend . tern)
+     (javascript-backend . lsp)
+     (go-backend . go-mode)
+     (go-backend . lsp)
+     (elixir-enable-compilation-checking . t)
+     (elixir-enable-compilation-checking)))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(markup-title-0-face ((t (:inherit markup-gen-face :height 1.6))))
+ '(markup-title-1-face ((t (:inherit markup-gen-face :height 1.5))))
+ '(markup-title-2-face ((t (:inherit markup-gen-face :height 1.4))))
+ '(markup-title-3-face ((t (:inherit markup-gen-face :weight bold :height 1.3))))
+ '(markup-title-5-face ((t (:inherit markup-gen-face :underline t :height 1.1)))))
+)
