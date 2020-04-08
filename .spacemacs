@@ -1570,16 +1570,22 @@ It should only modify the values of Spacemacs settings."
   ;; flycheck
   (add-hook 'c++-mode-hook 'flycheck-mode)
   (add-hook 'c-mode-hook 'flycheck-mode)
-  (defun my-flycheck-rtags-setup ()
-    (flycheck-select-checker 'rtags)
-    (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
-    (setq-local flycheck-check-syntax-automatically nil))
+  ;;(defun my-flycheck-rtags-setup ()
+  ;;  (flycheck-select-checker 'rtags)
+  ;;  (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
+  ;;  (setq-local flycheck-check-syntax-automatically nil))
   ;; c-mode-common-hook is also called by c++-mode
-  (add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup)
+  ;;(add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup)
   (eval-after-load 'flycheck
     '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 
-
+  ;; smooth scrolling
+  ;; 101 -> 30
+  (defun spacemacs/enable-smooth-scrolling ()
+    "Enable smooth scrolling."
+    (interactive)
+    (setq scroll-conservatively 30))
+  (spacemacs/enable-smooth-scrolling)
 
   ;; ede
   (global-ede-mode)
