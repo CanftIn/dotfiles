@@ -19,7 +19,6 @@ window:
   # Setting this to false will result in window without borders and title bar.
   decorations: full
 
-tabspaces: 3
 
 draw_bold_text_with_bright_colors: true
 
@@ -31,19 +30,19 @@ draw_bold_text_with_bright_colors: true
 # * file:///usr/share/doc/fontconfig/fontconfig-user.html
 font:
   normal:
-    family: SauceCodePro Nerd Font
+    family: Iosevka Nerd Font
     style: Regular
 
   bold:
-    family: SauceCodePro Nerd Font
+    family: Iosevka Nerd Font
     style: Bold
 
   italic:
-    family: SauceCodePro Nerd Font
+    family: Iosevka Nerd Font
     style: Italic
 
   size:
-    16.0
+    10.0
 
   # Offset is the extra space around each character. offset.y can be thought of
   # as modifying the linespacing, and offset.x as modifying the letter spacing.
@@ -69,7 +68,7 @@ font:
   # false.
   use_thin_strokes: true
 
-render_timer: false
+debug.render_timer: false
 
 # Colors (Dracula)
 colors:
@@ -104,7 +103,7 @@ visual_bell:
   animation: EaseOutExpo
   duration: 0
 
-background_opacity: 1.0
+background_opacity: 0.5 #1.0
 
 mouse_bindings:
   - { mouse: Middle, action: PasteSelection }
