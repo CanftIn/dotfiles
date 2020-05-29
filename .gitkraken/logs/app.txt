@@ -1,0 +1,5 @@
+[2020-04-17T06:12:03.698Z] Detecting Git and Git LFS: started
+[2020-04-17T06:12:05.077Z] Detected Git: 2.26.1
+[2020-04-17T06:12:05.082Z] Did not detect Git LFS
+[2020-04-17T06:16:01.377Z] Add user profile Default Profile: started.
+[2020-04-17T06:16:01.433Z] Add user profile Default Profile: finished. gk-log://duration?t=56

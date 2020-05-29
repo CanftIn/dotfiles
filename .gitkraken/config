@@ -1,0 +1,48 @@
+{
+  "lastUpgradeScriptRun": "v6.5.0",
+  "lastVersion": "6.5.4",
+  "lastReleaseNotesDisplayed": "6.5.4",
+  "appId": "e5482de5316a0825fae91e59a1ba55afb8f2549b",
+  "windowSettings": {
+    "x": 966,
+    "y": 34,
+    "width": 947,
+    "height": 1039,
+    "fullScreen": false,
+    "maximized": false
+  },
+  "registration": {
+    "email": "wwc7033@gmail.com",
+    "name": "CanftIn",
+    "status": "activated",
+    "loginType": "github",
+    "providerToken": {
+      "access_token": "6e49a7ba56fcbe1ddcadacbb2a65d80ec4981cf5",
+      "token_type": "bearer",
+      "scope": "admin:public_key,read:org,repo,user:email,workflow",
+      "expires_at": null
+    },
+    "date": "2020-04-17T06:14:39.767Z",
+    "EULA": {
+      "version": "1.0.0",
+      "status": "agree_verified"
+    }
+  },
+  "userId": "4b1db93f-1932-4f6a-99d1-b761488b3a3b",
+  "licensedFeatures": [],
+  "userFeatures": [
+    {
+      "betaFeaturesEnabled": true,
+      "name": "gitkraken"
+    },
+    {
+      "betaFeaturesEnabled": true,
+      "name": "glo"
+    },
+    {
+      "betaFeaturesEnabled": false,
+      "name": "timelines"
+    }
+  ],
+  "hasSeenNewUserOnboarding": true
+}
