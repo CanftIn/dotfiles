@@ -41,10 +41,10 @@ Xft.dpi:108
 !!URxvt.boldfont:xft:FiraCode-Regular:size=14:style=BOld:antialias=true
 
 
-URxvt.boldfont:xft:Hack Nerd Font:size=12:style=BOld:antialias=true,\
-xft:iosevka:size=14:style=BOld:antialias=true,\
+URxvt.boldfont:xft:Iosevka Nerd Font:size=12:style=BOld:antialias=true,\
+xft:Iosevka:size=14:style=BOld:antialias=true,\
 
-URxvt.font:xft:Hack Nerd Font:size=12:style=Regular:antialias=true,\
-xft:iosevka:size=14:style=Regular:antialias=true,\
+URxvt.font:xft:Iosevka Nerd Font:size=12:style=Regular:antialias=true,\
+xft:Iosevka:size=14:style=Regular:antialias=true,\
 
 !!URxvt.letterSpace: 2
