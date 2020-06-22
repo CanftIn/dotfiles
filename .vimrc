@@ -91,6 +91,8 @@ Plugin 'suan/vim-instant-markdown'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'jiangmiao/auto-pairs'
 
+Plugin 'neoclide/coc.nvim'
+
 """"""""""""""""""""""""""""""
 " language
 """"""""""""""""""""""""""""""
