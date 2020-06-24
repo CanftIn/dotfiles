@@ -1,0 +1,192 @@
+#=============================================================================
+# dark_powered.toml --- dark powered configuration example for SpaceVim
+# Copyright (c) 2016-2017 Wang Shidong & Contributors
+# Author: Wang Shidong < wsdjeg at 163.com >
+# License: GPLv3
+#=============================================================================
+
+# All SpaceVim option below [option] section
+[options]
+    # 设置 SpaceVim 主题及背景，默认的主题是 gruvbox，如果你需要使用更
+    # 多的主题，你可以载入 colorscheme 模块
+    # colorscheme = "gruvbox"
+
+    colorscheme = "OceanicNext"
+    colorscheme_bg = "dark"
+
+    # colorscheme = "NeoSolarized"
+    # colorscheme_bg = "light"
+    # 背景可以取值 "dark" 和 "light"
+
+    # 启用/禁用终端真色，在目前大多数终端下都是支持真色的，当然也有
+    # 一小部分终端不支持真色，如果你的 SpaceVim 颜色看上去比较怪异
+    # 可以禁用终端真色，将下面的值设为 false
+    enable_guicolors = true
+    # 设置状态栏上分割符号形状，如果字体安装失败，可以将值设为 "nil" 以
+    # 禁用分割符号，默认为箭头 "arrow"
+    statusline_separator = "nil"
+    statusline_separator = "bar"
+    # 设置顶部标签列表序号类型，有以下五种类型，分别是 0 - 4
+    # 0: 1 ➛ ➊ 
+    # 1: 1 ➛ ➀
+    # 2: 1 ➛ ⓵
+    # 3: 1 ➛ ¹
+    # 4: 1 ➛ 
+    buffer_index_type = 4
+    # 显示/隐藏顶部标签栏上文件类型图标，这一图标需要安装 nerd fonts，
+    # 如果未能成功安装这一字体，可以隐藏图标
+    enable_tabline_filetype_icon = true
+    # 是否在状态栏上显示当前模式，默认情况下，不显示 Normal/Insert 等
+    # 字样，只以颜色区分当前模式
+    enable_statusline_display_mode = false
+
+    # MY OWN OPTIONS
+    filemanager = "defx"
+    autocomplete_method = "coc"
+    bootstrap_before = "myspacevim#before"
+    bootstrap_after = "myspacevim#after"
+
+    search_tools = ["rg", "pt", "ack", "grep", "findstr"]
+    commandline_prompt = '>'
+    
+
+# ----------------- SpaceVim 添加的各种 layers ---------------------------------
+
+# 计算器 日历 书签等小工具
+[[layers]]
+  name = 'tools'
+
+# 禁用 SpaceVim 的 checkers layer
+[[layers]]
+  name = "checkers"
+  enable = false
+
+# 版本控制
+[[layers]]
+  name = "VersionControl"
+  enable-gtm-status = true
+
+[[layers]]
+  name = "git"
+  git-plugin = "fugitive"
+
+[[layers]]
+  name = "lang#markdown"
+  enableWcwidth = 1
+  listItemIndent = 1
+
+[[layers]]
+  name = "lang#latex"
+
+[[layers]]
+    name = 'lang#c'
+
+[[layers]]
+    name = 'lang#sh'
+    bash-file-head = [
+        '#!/usr/bin/env bash',
+        '# Time: `strftime("%Y-%m-%d %T")`',
+        ''
+    ]
+
+[[layers]]
+    name = 'core#statusline'
+    enable = true
+
+[[layers]]
+    name = 'core#tabline'
+    enable = true
+
+[[layers]]
+    name = 'shell'
+    default_position = 'top'
+    default_height = 30
+[[layers]]
+    name = 'incsearch'
+    enable = true
+
+[[layers]]
+  name = "lsp"
+  filetypes = [
+    "c",
+    "cpp"
+  ]
+  [layers.override_cmd]
+    c = ["clangd"]
+  [layers.override_cmd]
+    rust = ["rustup", "run", "nightly", "rls"]
+
+[[layers]]
+  name = "format"
+
+# ----------------- 添加的插件 -------------------------------------------------
+
+# oceanic-next 主题，采用其他的主题可以删除
+[[custom_plugins]]
+  name = "mhartington/oceanic-next"
+  merged = 0
+
+# coc.nvim 核心配置，不要删除
+[[custom_plugins]]
+  name = 'neoclide/coc.nvim'
+  merge = 0
+  build =  'yarn install --frozen-lockfile'
+
+# 主要用于快速搜索 文件, buffer 和 函数
+[[custom_plugins]]
+    name = "Yggdroot/LeaderF"
+    build = "./install.sh"
+
+# 快速编辑 markdown 表格
+[[custom_plugins]]
+  name = 'dhruvasagar/vim-table-mode'
+
+# vista.vim 的依赖
+[[custom_plugins]]
+    name = 'junegunn/fzf'
+    merged =  0
+
+# vista.vim 的依赖
+[[custom_plugins]]
+    name = "majutsushi/tagbar"
+
+# 更加美观的 tagbar 
+[[custom_plugins]]
+    name = 'liuchengxu/vista.vim'
+
+# 更加方便的调节窗口的大小
+[[custom_plugins]]
+    name = 'simeji/winresizer'
+
+# 比 nerdcommentary 更好用的注释工具
+[[custom_plugins]]
+    name = 'tpope/vim-commentary'
+
+# 基于lsp的高亮插件
+[[custom_plugins]]
+    name = 'jackguo380/vim-lsp-cxx-highlight'
+
+# https://github.com/skywind3000/asyncrun.vim
+# 本插件使用 Vim 8 / NeoVim 的异步机制，让你在后台运行 shell 命令，
+# 并将结果实时显示到 Vim 的 Quickfix 窗口中：
+[[custom_plugins]]
+    name = 'skywind3000/asyncrun.vim'
+
+# 从 http://cplusplus.com/ 和 http://cppreference.com/ 获取文档
+[[custom_plugins]]
+    name = 'skywind3000/vim-cppman'
+
+[[custom_plugins]]
+    name = 'rhysd/git-messenger.vim'
+    lazy =  1
+    on_cmd = 'GitMessenger'
+    on_map = '<Plug>(git-messenger'
+
+# 以悬浮窗口的形式打开终端
+[[custom_plugins]]
+    name = 'voldikss/vim-floaterm'
+
+# ----------------- 个人需要，自行取舍 -----------------------------------------
+# 时间统计工具，配合商业网站 https://wakatime.com/ 使用
+[[custom_plugins]]
+    name = 'wakatime/vim-wakatime'
