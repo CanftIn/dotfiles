@@ -103,12 +103,12 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
-
+source ~/.profile
 export GOPATH=~/workspace/go_workspace
 
 export JAVA_HOME=/usr/lib/jvm/java-13-openjdk
 export HADOOP_HOME=~/canftin_lib/hadoop-3.2.1
-export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:/home/canftin/.local/bin
 
 export GTK_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
@@ -121,7 +121,6 @@ export QT_IM_MODULE=ibus
 # zsh PATH
 # gem
 PATH="$PATH:/home/canftin/.gem/ruby/2.6.0/bin"
-
 
 #Color table from: http://www.understudy.net/custom.html
 fg_black=%{$'\e[0;30m'%}
@@ -256,3 +255,4 @@ setopt extendedhistory
 #Aliases
 alias q='exit'
 alias c='clear'
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
