@@ -11,7 +11,7 @@
     # 多的主题，你可以载入 colorscheme 模块
     # colorscheme = "gruvbox"
 
-    colorscheme = "OceanicNext"
+    colorscheme = "monokai"  #"OceanicNext"
     colorscheme_bg = "dark"
 
     # colorscheme = "NeoSolarized"
@@ -240,3 +240,83 @@
 # 时间统计工具，配合商业网站 https://wakatime.com/ 使用
 [[custom_plugins]]
     name = 'wakatime/vim-wakatime'
+
+
+# add the header information to the file
+[[custom_plugins]]
+  name = "alpertuna/vim-header"
+
+# avoid the cursor at the bottom ot top of the screen, default value=25%
+[[custom_plugins]]
+  name = "drzel/vim-scrolloff-fraction"
+
+# snippets in vim
+[[custom_plugins]]
+  name = "honza/vim-snippets"
+
+#  The plugin provides mappings to easily delete,
+#  change and add such surroundings in pairs.
+[[custom_plugins]]
+  name = "tpope/vim-surround"
+
+# nice monokai syntax highlight theme
+[[custom_plugins]]
+name = "crusoexia/vim-monokai"
+
+# programming with server using vim
+[[custom_plugins]]
+name = "zenbro/mirror.vim"
+
+# Repeat.vim remaps . in a way that plugins can tap into it.
+# unite-outline is a unite.vim's source which provides
+# your Vim's buffer with the outline view. 
+[[custom_plugins]]
+name = "Shougo/unite-outline"
+
+# enhanced text object in vim
+[[custom_plugins]]
+name = "wellle/targets.vim"
+
+# Displays function signatures from completions in the command line.
+[[custom_plugins]]
+name = "Shougo/echodoc.vim"
+
+# enhanced highlighting for cpp in vim
+[[custom_plugins]]
+name = "octol/vim-cpp-enhanced-highlight"
+
+# support vimL programming in vim
+[[custom_plugins]]
+name = "vim-scripts/Vim-Support"
+
+# Repeat.vim remaps . in a way that plugins can tap into it
+[[custom_plugins]]
+name = "tpope/vim-repeat"
+
+# Adds for file icons
+[[custom_plugins]]
+name = "ryanoasis/vim-devicons"
+
+# display the number of matches while searching
+[[custom_plugins]]
+name = "google/vim-searchindex"
+
+# switch between the source file and header file for c&c++
+[[custom_plugins]]
+name = "ericcurtin/CurtineIncSw.vim"
+
+# run the compile file asychronously
+[[custom_plugins]]
+name = "skywind3000/asyncrun.vim"
+
+# auto-insert the other half of bracket
+[[custom_plugins]]
+name = "jiangmiao/auto-pairs"
+
+# vim plugin for pyTest
+[[custom_plugins]]
+name = "alfredodeza/pytest.vim"
+
+# enhanced python syntax highlighting in vim
+[[custom_plugins]]
+name = "vim-python/python-syntax"
