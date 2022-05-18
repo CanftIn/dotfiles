@@ -38,16 +38,16 @@ This function should only modify configuration layer settings."
 
      ;; ***compiled language***
      (c-c++ :variables
-           =c-c++-backend= 'lsp-ccls ;;'lsp-clangd
-           c-c++-adopt-subprojects t
-           c-c++-lsp-enable-semantic-highlight 'rainbow
-           c-c++-default-mode-for-headers 'c++-mode
-           ;;c++-enable-organize-includes-on-save t
-           c-c++-enable-clang-format-on-save t
-           c-c++-enable-google-style t
-           c-c++-enable-google-newline t
-           c-c++-dap-adapters '(dap-lldb dap-cpptools)
-           )
+            =c-c++-backend= 'lsp-ccls ;;'lsp-clangd
+            c-c++-adopt-subprojects t
+            c-c++-lsp-enable-semantic-highlight 'rainbow
+            c-c++-default-mode-for-headers 'c++-mode
+            ;;c++-enable-organize-includes-on-save t
+            c-c++-enable-clang-format-on-save t
+            c-c++-enable-google-style t
+            c-c++-enable-google-newline t
+            c-c++-dap-adapters '(dap-lldb dap-cpptools)
+            )
 
      ;; ***text language***
      (org :variables
@@ -75,7 +75,7 @@ This function should only modify configuration layer settings."
                       auto-completion-private-snippets-directory "d:/linux_home/.emacs.d/private/yasnippets"
                       )
      ;; better-defaults
-     ;; git
+     git
      helm
      ;; lsp
      ;; markdown
@@ -86,7 +86,19 @@ This function should only modify configuration layer settings."
      ;;        shell-default-position 'bottom)
      ;; spell-checking
      ;; version-control
-     treemacs)
+     treemacs
+
+     ;; ------------------- system setup -----------------------
+     (osx :variables osx-command-as       'hyper
+          osx-option-as        'meta
+          osx-control-as       'control
+          osx-function-as      nil
+          osx-right-command-as 'left
+          osx-right-option-as  'left
+          osx-right-control-as 'left
+          osx-swap-option-and-command nil) 
+
+     )
 
    dotspacemacs-additional-packages 
    '(
@@ -146,6 +158,8 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-show-startup-list-numbers t
 
    dotspacemacs-startup-buffer-multi-digit-delay 0.4
+
+   dotspacemacs-startup-buffer-show-icons t
 
    dotspacemacs-new-empty-buffer-major-mode 'text-mode
 
@@ -556,18 +570,18 @@ It should only modify the values of Spacemacs settings."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(evil-want-Y-yank-to-eol nil)
- '(package-selected-packages
-   '(zenburn-theme sublime-themes solarized-theme moe-theme material-theme majapahit-theme light-soap-theme inkpot-theme heroku-theme gruvbox-theme gotham-theme flatui-theme flatland-theme farmhouse-theme doom-themes darktooth-theme autothemer bubbleberry-theme apropospriate-theme alect-themes afternoon-theme yasnippet-snippets yapfify sphinx-doc slime-company pytest pyenv-mode pydoc py-isort poetry transient pippel pipenv pyvenv pip-requirements nose live-py-mode importmagic epc ctable concurrent helm-rtags helm-pydoc helm-company helm-c-yasnippet google-c-style gendoxy fuzzy flycheck-ycmd flycheck-rtags flycheck-pos-tip disaster cython-mode cpp-auto-include company-ycmd ycmd request-deferred deferred company-statistics company-rtags rtags company-quickhelp pos-tip company-c-headers company-box frame-local company-anaconda company common-lisp-snippets clojure-snippets blacken auto-yasnippet anaconda-mode pythonic ac-ispell auto-complete slime sayid flycheck-joker flycheck-clj-kondo clj-refactor inflections multiple-cursors yasnippet lv ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org symon symbol-overlay string-inflection string-edit spaceline-all-the-icons restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-cider helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu emr elisp-slime-nav editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish define-word column-enforce-mode clean-aindent-mode cider-eval-sexp-fu centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(evil-want-Y-yank-to-eol nil)
+   '(package-selected-packages
+     '(reveal-in-osx-finder osx-trash osx-dictionary osx-clipboard launchctl zenburn-theme sublime-themes solarized-theme moe-theme material-theme majapahit-theme light-soap-theme inkpot-theme heroku-theme gruvbox-theme gotham-theme flatui-theme flatland-theme farmhouse-theme doom-themes darktooth-theme autothemer bubbleberry-theme apropospriate-theme alect-themes afternoon-theme yasnippet-snippets yapfify sphinx-doc slime-company pytest pyenv-mode pydoc py-isort poetry transient pippel pipenv pyvenv pip-requirements nose live-py-mode importmagic epc ctable concurrent helm-rtags helm-pydoc helm-company helm-c-yasnippet google-c-style gendoxy fuzzy flycheck-ycmd flycheck-rtags flycheck-pos-tip disaster cython-mode cpp-auto-include company-ycmd ycmd request-deferred deferred company-statistics company-rtags rtags company-quickhelp pos-tip company-c-headers company-box frame-local company-anaconda company common-lisp-snippets clojure-snippets blacken auto-yasnippet anaconda-mode pythonic ac-ispell auto-complete slime sayid flycheck-joker flycheck-clj-kondo clj-refactor inflections multiple-cursors yasnippet lv ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org symon symbol-overlay string-inflection string-edit spaceline-all-the-icons restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-cider helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu emr elisp-slime-nav editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish define-word column-enforce-mode clean-aindent-mode cider-eval-sexp-fu centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(highlight-parentheses-highlight ((nil (:weight ultra-bold))) t))
+  )
